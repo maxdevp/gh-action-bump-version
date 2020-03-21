@@ -55,7 +55,7 @@ Toolkit.run(async tools => {
     newVersion = `${process.env['INPUT_TAG-PREFIX']}${newVersion}`
     console.log('new version:', newVersion)
 
-    if(process.env.PUSH_CHANGES) {
+    if(process.env.PUSH_CHANGES == "true") {
       await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
 
       const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
