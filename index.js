@@ -59,7 +59,7 @@ Toolkit.run(async tools => {
       for(const package of fs.readdirSync("./packages")) {
         const packageVersion = newVersion.replace("v", "");
         const packageJsonPath = `./packages/${package}/package.json`;
-        const packageJson = fs.readFileSync(packageJsonPath);
+        const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
         packageJson["version"] = packageVersion;
         fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson));
         console.log(`package ${packageJsonPath} updated with ${JSON.stringify(packageJson)}`);
