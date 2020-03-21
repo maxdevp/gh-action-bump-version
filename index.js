@@ -57,7 +57,7 @@ Toolkit.run(async tools => {
     if(fs.existsSync("./packages")) {
       console.log(`packages folder exists. will increment each package version`);
       for(const package of fs.readdirSync("./packages")) {
-        const command = `npm version ${newVersion} --prefix ./packages/${package} --git-tag-version=false ${version}`.toString().trim();
+        const command = `npm version ${newVersion.replace("v", "")} --prefix ./packages/${package} --git-tag-version=false ${version}`.toString().trim();
         console.log(`executing ${command}`);
         execSync(command);
       }
