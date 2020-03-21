@@ -54,13 +54,17 @@ Toolkit.run(async tools => {
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
     newVersion = `${process.env['INPUT_TAG-PREFIX']}${newVersion}`
     console.log('new version:', newVersion)
-    await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
 
-    const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
-    // console.log(Buffer.from(remoteRepo).toString('base64'))
-    await tools.runInWorkspace('git', ['tag', newVersion])
-    await tools.runInWorkspace('git', ['push', remoteRepo, '--follow-tags'])
-    await tools.runInWorkspace('git', ['push', remoteRepo, '--tags'])
+    if(process.env.PUSH_CHANGES) {
+      await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
+
+      const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
+      // console.log(Buffer.from(remoteRepo).toString('base64'))
+      await tools.runInWorkspace('git', ['tag', newVersion])
+      await tools.runInWorkspace('git', ['push', remoteRepo, '--follow-tags'])
+      await tools.runInWorkspace('git', ['push', remoteRepo, '--tags'])
+    }
+
   } catch (e) {
     tools.log.fatal(e)
     tools.exit.failure('Failed to bump version')
