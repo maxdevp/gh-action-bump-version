@@ -1,3 +1,4 @@
+const fs = require("fs");
 const { Toolkit } = require('actions-toolkit')
 const { execSync } = require('child_process')
 
@@ -52,6 +53,16 @@ Toolkit.run(async tools => {
       ['version', '--allow-same-version=true', '--git-tag-version=false', current])
     console.log('current:', current, '/', 'version:', version)
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
+
+    if(fs.existsSync("./packages")) {
+      console.log(`packages folder exists. will increment each package version`);
+      for(const package of fs.readdirSync("./packages")) {
+        const command = `npm version --prefix ./${package} --git-tag-version=false ${version}`.toString().trim();
+        console.log(`executing ${command}`);
+        execSync(command);
+      }
+    }
+
     newVersion = `${process.env['INPUT_TAG-PREFIX']}${newVersion}`
     console.log('new version:', newVersion)
 
